@@ -1,27 +1,45 @@
+import { ChangeEvent, useEffect, useState } from 'react';
 import './App.css';
-import { useEffect, useState } from 'react';
 import CardList from './card-list/card-list.component';
 import SearchBox from './search-box/search-box.component';
+import { getData } from './utils/data.utils';
+
+export type Monster = {
+	id: string;
+	name: string;
+	email: string;
+};
 
 const App = () => {
 	console.log('render');
 	const [searchField, setSearchField] = useState('');
-	const [monsters, setMonsters] = useState([]);
+	const [monsters, setMonsters] = useState<Monster[]>([]);
 	const [filteredMonsters, setFilteredMonsters] = useState(monsters);
 
-	const onSearchChange = (event) => {
+	const onSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
 		setSearchField(event.target.value.toLocaleLowerCase());
 	};
 
 	useEffect(() => {
 		console.log('useEffect fetch');
-		fetch('https://jsonplaceholder.typicode.com/users')
-			.then((response) => {
-				return response.json();
-			})
-			.then((users) => {
-				setMonsters(users);
-			});
+		// fetch('https://jsonplaceholder.typicode.com/users')
+		// 	.then((response) => {
+		// 		return response.json();
+		// 	})
+		// 	.then((users) => {
+		// 		setMonsters(users);
+		// 	});
+
+		const fetchUsers = async () => {
+			// const users = await getData<Array<Monster>>(
+			// 	'https://jsonplaceholder.typicode.com/users'
+			// );
+			const users = await getData<Monster[]>(
+				'https://jsonplaceholder.typicode.com/users'
+			);
+			setMonsters(users);
+		};
+		fetchUsers();
 	}, []);
 
 	useEffect(() => {
